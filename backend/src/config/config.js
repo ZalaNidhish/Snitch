@@ -1,0 +1,10 @@
+import 'dotenv/config';
+
+const PORT = process.env.PORT;
+const BACKEND_URL = process.env.BACKEND_URL;
+const MONGO_URI = process.env.MONGO_URI;
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+const IMAGEKIT_PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY
+
+export {PORT, BACKEND_URL, MONGO_URI, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, IMAGEKIT_PRIVATE_KEY};

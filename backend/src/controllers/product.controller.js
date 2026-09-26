@@ -1,0 +1,89 @@
+import {deleteFiles, uploadFiles} from '../services/storage.service.js'
+import {productModel} from '../models/product.model.js'
+
+const createProductController = async (req, res) => {
+    
+    const fileUrls = [];
+    const imageIDs = [];
+
+    // mentos jindagi
+    const promises = [];
+
+    for(let i=0; i<req.files.length; i++){
+        const response = uploadFiles(req.files[i].buffer, req.files[i].originalname)
+        promises.push(response);
+    }
+
+    const responses = await Promise.all(promises);
+    responses.forEach((res) => {
+        fileUrls.push(res.url);
+        imageIDs.push(res.fileId);
+    });
+
+    // normal jindagi
+
+    // for(let i=0; i<req.files.length; i++){
+    //     const response = await  uploadFiles(req.files[i].buffer, req.files[i].originalname)
+    //     fileUrls.push(response.url);
+    //     imageIDs.push(response.fileId);
+    // }
+
+    const product = await productModel.create({
+        title: req.body.title,
+        description: req.body.description,
+        images: fileUrls,
+        imageIDs,
+        price: {
+            amount: req.body.price.amount,
+            currency: req.body.price.currency
+        },
+        sizes: req.body.sizes,
+        seller: req.user.userID
+    })
+
+    return res.status(200).json({
+        message: "Product Created successfully.",
+        data: {
+            product
+        }
+    });
+
+}
+
+const getAllProductController = async (req, res) => {
+    const products = await productModel.find();
+    return res.status(200).json({
+        message: "Products Fetched successfully",
+        data: {
+            products
+        }
+    })
+}
+
+const deleteProductController = async (req, res) => {
+    const id = req.params.id;
+    const product = await productModel.findById(id);
+    const fileids = product.imageIDs || [];
+
+    // normal jindagi
+
+    // for(let i=0; i<fileids.length; i++){
+    //     await deleteFiles(fileids[i])
+    // }
+
+    // mentos jindagi
+
+    const promises = fileids.map(id => deleteFiles(id));
+    await Promise.all(promises);
+
+    const deletedproduct = await productModel.findByIdAndDelete(id);
+
+    return res.status(200).json({
+        message: "Product deleted successfully",
+        data: {
+            product: deletedproduct
+        }
+    })
+}
+
+export {createProductController, getAllProductController, deleteProductController}
