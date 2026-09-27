@@ -69,6 +69,7 @@ export const listProductValidator = [
                 errors
             })
         }
+        next()
     }
 
 ]
@@ -85,9 +86,10 @@ export const unlistProductValidator = [
         if(!errors.isEmpty()){
             return res.status(400).json({
                 message: "Error in product id",
-                errors
+                errors: errors.array()
             })
         }
+        next()
     }
 
 ]
