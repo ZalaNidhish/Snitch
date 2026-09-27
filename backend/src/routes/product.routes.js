@@ -16,7 +16,7 @@ const upload = multer({
 //all products
 router.get('/seller', authenticate, authorize, getAllSellerProductController)
 
-router.get('/', authenticate, getAllProductController)
+router.get('/', getAllProductController)
 
 //List products
 
