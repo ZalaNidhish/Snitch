@@ -78,7 +78,7 @@ const loginController = async (req, res)=>{
         })  
     }
 
-    const passwordMatch = bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if(!passwordMatch){
         return res.status(400).json({
@@ -107,6 +107,7 @@ const loginController = async (req, res)=>{
         data: {
             email: user.email,
             name: user.name,
+            role: user.role,
             id: user._id 
         },
         accessToken: access_token
@@ -168,6 +169,7 @@ const refreshController = async (req, res)=>{
                     user: {
                     email: user.email,
                     name: user.name,
+                    role: user.role,
                     id: user._id 
                },
                accessToken: access_token
@@ -192,6 +194,7 @@ const getmeController = async(req, res)=>{
             user: {
                 email: user.emai,
                 name: user.name,
+                role: user.role,
                 id: user._id
             }
         }
