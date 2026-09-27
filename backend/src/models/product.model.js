@@ -69,6 +69,10 @@ const productSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+    isListed: {
+        type: Boolean,
+        default: false
     }
 
 

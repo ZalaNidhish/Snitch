@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
-import {createProductController, deleteProductController, getAllProductController} from '../controllers/product.controller.js'
+import {createProductController, deleteProductController, getAllProductController, getAllSellerProductController, listProductController, unlistProductController} from '../controllers/product.controller.js'
 import {authenticate, authorize} from '../middlewares/auth.middleware.js'
-import {productValidator} from '../validators/product.validator.js'
+import {listProductValidator, productValidator, unlistProductValidator} from '../validators/product.validator.js'
 import multer from 'multer'
 
 const upload = multer({
@@ -14,8 +14,15 @@ const upload = multer({
 })
 
 //all products
-router.get('/', authenticate, authorize, getAllProductController)
+router.get('/seller', authenticate, authorize, getAllSellerProductController)
 
+router.get('/', authenticate, getAllProductController)
+
+//List products
+
+router.post('/list/:id', authenticate, authorize, listProductValidator, listProductController)
+
+router.post('/unlist/:id', authenticate, authorize, unlistProductValidator, unlistProductController)
 
 //create product
 router.post('/', authenticate, authorize, upload.array("images"), (req, res, next)=>{

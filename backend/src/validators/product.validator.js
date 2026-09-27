@@ -1,4 +1,4 @@
-import {body, validationResult} from 'express-validator'
+import {body, param, validationResult} from 'express-validator'
 
 export const productValidator = [
     
@@ -53,4 +53,41 @@ export const productValidator = [
 
     }
     
+]
+
+export const listProductValidator = [
+
+    param('id')
+    .exists().withMessage("Product id is required").bail()
+    .isMongoId().withMessage("Product is is not valid mongo id"),
+
+    (req, res, next) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message: "Error in product id",
+                errors
+            })
+        }
+    }
+
+]
+
+
+export const unlistProductValidator = [
+
+    param('id')
+    .exists().withMessage("Product id is required").bail()
+    .isMongoId().withMessage("Product is is not valid mongo id"),
+
+    (req, res, next) => {
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message: "Error in product id",
+                errors
+            })
+        }
+    }
+
 ]

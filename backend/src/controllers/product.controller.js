@@ -51,11 +51,43 @@ const createProductController = async (req, res) => {
 }
 
 const getAllProductController = async (req, res) => {
+    const products = await productModel.find({isListed: true});
+    return res.status(200).json({
+        message: "Products Fetched successfully",
+        data: {
+            products
+        }
+    })
+}
+
+const getAllSellerProductController = async (req, res) => {
     const products = await productModel.find();
     return res.status(200).json({
         message: "Products Fetched successfully",
         data: {
             products
+        }
+    })
+}
+
+const listProductController = async (req, res) => {
+    const id = req.params.id
+    const product = await productModel.findByIdAndUpdate(id, {isListed: true})
+    return res.status(200).json({
+        message: "Product Listed Successfully",
+        data: {
+            product
+        }
+    })
+}
+
+const unlistProductController = async (req, res) => {
+    const id = req.params.id
+    const product = await productModel.findByIdAndUpdate(id, {isListed: false})
+    return res.status(200).json({
+        message: "Product Unlisted Successfully",
+        data: {
+            product
         }
     })
 }
@@ -86,4 +118,4 @@ const deleteProductController = async (req, res) => {
     })
 }
 
-export {createProductController, getAllProductController, deleteProductController}
+export {createProductController, getAllProductController, deleteProductController, getAllSellerProductController, listProductController, unlistProductController}
