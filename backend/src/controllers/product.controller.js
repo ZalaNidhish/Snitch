@@ -61,14 +61,21 @@ const getAllProductController = async (req, res) => {
 }
 
 const getSingleProductController = async (req, res) => {
-    const id = req.params.id
-    const products = await productModel.findById(id);
-    return res.status(200).json({
-        message: "Product Fetched successfully",
-        data: {
-            product
-        }
-    })
+    try{
+        const id = req.params.id
+        const product = await productModel.findById(id);
+        return res.status(200).json({
+            message: "Product Fetched successfully",
+            data: {
+                product
+            }
+        })
+    }catch(err){
+        return res.status(400).json({
+            message: "Error in single product",
+            errors: err
+        })
+    }
 }
 
 const getAllSellerProductController = async (req, res) => {
