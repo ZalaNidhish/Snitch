@@ -60,6 +60,17 @@ const getAllProductController = async (req, res) => {
     })
 }
 
+const getSingleProductController = async (req, res) => {
+    const id = req.params.id
+    const products = await productModel.findById(id);
+    return res.status(200).json({
+        message: "Product Fetched successfully",
+        data: {
+            product
+        }
+    })
+}
+
 const getAllSellerProductController = async (req, res) => {
     const products = await productModel.find();
     return res.status(200).json({
@@ -118,4 +129,4 @@ const deleteProductController = async (req, res) => {
     })
 }
 
-export {createProductController, getAllProductController, deleteProductController, getAllSellerProductController, listProductController, unlistProductController}
+export {createProductController, getAllProductController, getSingleProductController, deleteProductController, getAllSellerProductController, listProductController, unlistProductController}
