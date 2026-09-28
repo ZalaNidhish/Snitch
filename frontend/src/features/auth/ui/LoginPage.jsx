@@ -85,7 +85,7 @@ const LoginPage = () => {
 
           <span>
             <h4 className="text-blue-700">Test Seller Credentials</h4>
-            <p className="text-green-900">seller@gmail.com  |  test123</p>
+            <p className="text-green-900">seller@gmail.com  |  test123#</p>
           </span>
 
         </form>
