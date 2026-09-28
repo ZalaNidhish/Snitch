@@ -50,6 +50,84 @@ const createProductController = async (req, res) => {
 
 }
 
+const updateProductController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.findOne({ _id: id, seller: req.user.userID });
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found.",
+      });
+    }
+
+    let updatedFileUrls = [...product.images];
+    let updatedImageIDs = [...product.imageIDs];
+
+    if (req.body.imagesToDelete) {
+      const imagesToDelete = Array.isArray(req.body.imagesToDelete)
+        ? req.body.imagesToDelete
+        : JSON.parse(req.body.imagesToDelete || "[]");
+
+      for (const fileId of imagesToDelete) {
+        // Optional: Call your cloud delete utility here
+        await deleteFiles(id)
+
+        const index = updatedImageIDs.indexOf(fileId);
+        if (index !== -1) {
+          updatedImageIDs.splice(index, 1);
+          updatedFileUrls.splice(index, 1);
+        }
+      }
+    }
+
+    // 3. Handle upload of new images if provided in request
+    if (req.files && req.files.length > 0) {
+      const promises = req.files.map((file) =>
+        uploadFiles(file.buffer, file.originalname)
+      );
+
+      const responses = await Promise.all(promises);
+
+      responses.forEach((uploaded) => {
+        updatedFileUrls.push(uploaded.url);
+        updatedImageIDs.push(uploaded.fileId);
+      });
+    }
+
+    product.title = req.body.title || product.title;
+    product.description = req.body.description || product.description;
+    product.images = updatedFileUrls;
+    product.imageIDs = updatedImageIDs;
+
+    if (price) {
+      product.price = {
+        amount: price.amount ?? product.price.amount,
+        currency: price.currency ?? product.price.currency,
+      };
+    }
+
+    if (sizes) {
+      product.sizes = sizes;
+    }
+
+    await product.save();
+
+    return res.status(200).json({
+      message: "Product updated successfully.",
+      data: {
+        product,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to update product.",
+      error: error.message,
+    });
+  }
+};
+
 const getAllProductController = async (req, res) => {
     const products = await productModel.find({isListed: true});
     return res.status(200).json({
@@ -136,4 +214,4 @@ const deleteProductController = async (req, res) => {
     })
 }
 
-export {createProductController, getAllProductController, getSingleProductController, deleteProductController, getAllSellerProductController, listProductController, unlistProductController}
+export {createProductController, getAllProductController, updateProductController, getSingleProductController, deleteProductController, getAllSellerProductController, listProductController, unlistProductController}

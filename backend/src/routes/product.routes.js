@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import {createProductController, deleteProductController, getAllProductController, getAllSellerProductController, getSingleProductController, listProductController, unlistProductController} from '../controllers/product.controller.js'
+import {createProductController, deleteProductController, getAllProductController, getAllSellerProductController, getSingleProductController, listProductController, unlistProductController, updateProductController} from '../controllers/product.controller.js'
 import {authenticate, authorize} from '../middlewares/auth.middleware.js'
 import {listProductValidator, productValidator, unlistProductValidator} from '../validators/product.validator.js'
 import multer from 'multer'
@@ -32,6 +32,13 @@ router.post('/', authenticate, authorize, upload.array("images"), (req, res, nex
     req.body.sizes && (req.body.sizes = JSON.parse(req.body.sizes));
     next();
 }, productValidator, createProductController);
+
+//update product
+router.put('/', authenticate, authorize, upload.array("images"), (req, res, next)=>{
+    req.body.price && (req.body.price = JSON.parse(req.body.price));
+    req.body.sizes && (req.body.sizes = JSON.parse(req.body.sizes));
+    next();
+}, productValidator, updateProductController);
 
 
 // delete product
