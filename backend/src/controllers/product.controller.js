@@ -53,6 +53,7 @@ const createProductController = async (req, res) => {
 const updateProductController = async (req, res) => {
   try {
     const { id } = req.params;
+    const { price, sizes } = req.body;
 
     const product = await productModel.findOne({ _id: id, seller: req.user.userID });
 
@@ -72,7 +73,7 @@ const updateProductController = async (req, res) => {
 
       for (const fileId of imagesToDelete) {
         // Optional: Call your cloud delete utility here
-        await deleteFiles(id)
+        await deleteFiles(fileId)
 
         const index = updatedImageIDs.indexOf(fileId);
         if (index !== -1) {

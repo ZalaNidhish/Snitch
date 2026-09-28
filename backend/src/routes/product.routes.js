@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import {createProductController, deleteProductController, getAllProductController, getAllSellerProductController, getSingleProductController, listProductController, unlistProductController, updateProductController} from '../controllers/product.controller.js'
 import {authenticate, authorize} from '../middlewares/auth.middleware.js'
-import {listProductValidator, productValidator, unlistProductValidator} from '../validators/product.validator.js'
+import {listProductValidator, productValidator, unlistProductValidator, updateProductValidator} from '../validators/product.validator.js'
 import multer from 'multer'
 
 const upload = multer({
@@ -34,11 +34,11 @@ router.post('/', authenticate, authorize, upload.array("images"), (req, res, nex
 }, productValidator, createProductController);
 
 //update product
-router.put('/', authenticate, authorize, upload.array("images"), (req, res, next)=>{
+router.put('/:id', authenticate, authorize, upload.array("images"), (req, res, next)=>{
     req.body.price && (req.body.price = JSON.parse(req.body.price));
     req.body.sizes && (req.body.sizes = JSON.parse(req.body.sizes));
     next();
-}, productValidator, updateProductController);
+}, updateProductValidator, updateProductController);
 
 
 // delete product

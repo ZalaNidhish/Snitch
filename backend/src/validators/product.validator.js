@@ -55,6 +55,16 @@ export const productValidator = [
     
 ]
 
+// Update = same body rules as create + the :id in the URL must be a valid Mongo id
+export const updateProductValidator = [
+
+    param('id')
+    .exists().withMessage("Product id is required").bail()
+    .isMongoId().withMessage("Product id is not valid mongo id"),
+
+    ...productValidator
+]
+
 export const listProductValidator = [
 
     param('id')
